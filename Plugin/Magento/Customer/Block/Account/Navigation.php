@@ -41,15 +41,18 @@ class Navigation extends \Magento\Customer\Block\Account\Navigation
     {
 
         if ($this->helper->isEnabled() && $subject->getNameInLayout() == 'customer_account_navigation') {
-            $customResult = $resultNew = [];
+            $customResult = [];
             /* @var \Magento\Customer\Block\Account\Link $link */
             foreach ($result as $key => $link) {
                 if ($this->isShow($link)) {
-                    $customResult[$link->getData('sortOrder')] = $link;
+                    $customResult[$key] = $link;
                 }
             }
 
-            ksort($customResult);
+            uasort($customResult, function ($a, $b) {
+                return (int) $a->getData('sortOrder') <=> (int) $b->getData('sortOrder');
+            });
+
             return $customResult;
         }
         return $result;
